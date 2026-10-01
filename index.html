@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>چيميل كاش</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23f7d774'/><stop offset='.5' stop-color='%23d4af37'/><stop offset='1' stop-color='%23e62030'/></linearGradient></defs><rect width='100' height='100' rx='24' fill='%230a0a0f'/><text x='50' y='72' font-size='68' font-weight='900' text-anchor='middle' fill='url(%23g)' font-family='system-ui'>M</text></svg>">
+<style>
+:root{--bg:#0a0a0f;--card:#15151f;--card2:#1c1c2a;--txt:#f0eff7;--mut:#8b89a8;--pri:#e62030;--pri2:#ff2f42;--gold:#d4af37;--gold2:#f7d774;--ok:#22c55e;--danger:#ef4444;--warn:#f59e0b;--rad:16px;--rad2:22px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;line-height:1.6;background-size:cover;background-position:center;background-attachment:fixed;background-repeat:no-repeat;padding-bottom:80px}
+.logo-svg{width:96px;height:96px;border-radius:24px;box-shadow:0 8px 40px #e6203055,0 0 0 1px #d4af3744;display:block}
+.logo-svg-sm{width:40px;height:40px;border-radius:12px;display:block;box-shadow:0 0 0 1px #d4af3744}
+.logo-hero{width:110px;height:110px;border-radius:28px;display:block;box-shadow:0 12px 60px #e6203055,0 0 0 1px #d4af3755;animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+body.captcha-bg{background:radial-gradient(ellipse at top,#3a0508 0%,#150202 40%,#000 100%),radial-gradient(ellipse at bottom,#2a0405 0%,transparent 70%)}
+body.admin-bg{background:radial-gradient(circle at 30% 10%,#2a1a06 0%,transparent 50%),radial-gradient(circle at 70% 90%,#1a0606 0%,transparent 50%),linear-gradient(135deg,#0a0a0f 0%,#100a06 50%,#0a0508 100%)}
+body.work-bg{background:radial-gradient(circle at 50% 100%,#1a1006 0%,transparent 60%),linear-gradient(180deg,#0a0a0f 0%,#0f0a05 100%)}
+body.login-bg{background:radial-gradient(circle at 50% 0%,#2a0405 0%,#100202 40%,#000 100%)}
+button{font-family:inherit;cursor:pointer;border:0;outline:0}
+input,select,textarea{font-family:inherit}
+#app{min-height:100vh;position:relative;z-index:1}
+.wrap{max-width:480px;margin:0 auto;padding:20px 16px;min-height:100vh}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+
+/* ============ 3 Bars ============ */
+.backup-bar{position:sticky;top:0;z-index:99;display:none;grid-template-columns:1fr 1fr 1fr;gap:4px;padding:6px;background:#0a0a0fee;backdrop-filter:blur(16px);border-bottom:1px solid #d4af3722}
+.backup-bar.show{display:grid}
+.bk-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:8px 6px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;font-size:.7rem;text-align:center;line-height:1.2;min-width:0}
+.bk-item .bk-ic{font-size:1.1rem;line-height:1}
+.bk-item .bk-tx{color:var(--mut);font-weight:600;font-size:.68rem}
+.bk-item .bk-val{color:var(--gold2);font-weight:800;font-size:.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.bk-item.active{border-color:#22c55e66;background:#081a0e}
+.bk-item.active .bk-val{color:#86efac}
+.bk-item.warn{border-color:#f59e0b66;background:#1a1408}
+.bk-item.warn .bk-val{color:#fcd34d}
+.bk-item.danger{border-color:#ef444466;background:#1c0808}
+.bk-item.danger .bk-val{color:#fca5a5}
+.bk-item.clickable{cursor:pointer}
+.bk-item.clickable:active{transform:scale(.97)}
+
+.topnav{position:sticky;top:0;z-index:100;display:none;gap:6px;padding:10px 12px;background:linear-gradient(180deg,#0a0a0fee,#0a0a0fcc);backdrop-filter:blur(16px);border-bottom:1px solid #d4af3722;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.topnav.has-backup{top:64px}
+.topnav::-webkit-scrollbar{display:none}
+.topnav.show{display:flex}
+.nav-item{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:8px 14px;background:#ffffff0a;border:1px solid #ffffff14;border-radius:999px;color:var(--txt);font-size:.82rem;font-weight:700;white-space:nowrap}
+.nav-item:active{transform:scale(.95);background:#d4af3722}
+
+.brand{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#f7d774,#d4af37 50%,#e62030);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin:14px 0 4px}
+.brand-sub{color:var(--mut);font-size:.9rem;margin-bottom:22px}
+.card{background:var(--card);border:1px solid #ffffff10;border-radius:var(--rad2);padding:18px;margin-bottom:14px;box-shadow:0 8px 40px #0008}
+.card-glass{background:#0f0f18cc;backdrop-filter:blur(14px);border:1px solid #ffffff15}
+.card-gold{border:1px solid #d4af3755;background:linear-gradient(135deg,#15100a,#1c1508)}
+
+/* ============ Wallet Hero Card ============ */
+.wallet-hero{
+  position:relative;
+  overflow:hidden;
+  padding:26px 22px 24px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#1a1206 0%,#201508 40%,#2a1a08 100%);
+  border:1px solid #d4af3766;
+  box-shadow:0 12px 50px #000a,inset 0 0 80px #d4af3710,0 0 60px #d4af3715;
+  margin-bottom:16px;
+  cursor:pointer;
+  transition:.2s;
+}
+.wallet-hero:active{transform:scale(.99)}
+.wallet-hero::before{
+  content:'';
+  position:absolute;top:-50%;right:-30%;width:200px;height:200px;
+  background:radial-gradient(circle,#f7d77422,transparent 70%);
+  pointer-events:none;
+}
+.wallet-hero::after{
+  content:'';
+  position:absolute;bottom:-60%;left:-20%;width:180px;height:180px;
+  background:radial-gradient(circle,#e6203022,transparent 70%);
+  pointer-events:none;
+}
+.wallet-hero-inner{position:relative;z-index:1}
+.wallet-title{
+  font-size:1.1rem;
+  font-weight:800;
+  color:var(--gold2);
+  letter-spacing:1px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.wallet-title::before{content:'';width:4px;height:22px;background:linear-gradient(180deg,#f7d774,#e62030);border-radius:4px}
+.wallet-amount{
+  font-size:3rem;
+  font-weight:900;
+  line-height:1;
+  background:linear-gradient(135deg,#fff7e0,#f7d774 40%,#d4af37);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:6px;
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+}
+.wallet-amount small{font-size:1.3rem;font-weight:700;color:#d4af37;-webkit-text-fill-color:#d4af37}
+.wallet-sub{
+  color:#c9a86a;
+  font-size:.82rem;
+  font-weight:600;
+  letter-spacing:.5px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.wallet-sub::before{content:'←';font-size:.9rem}
+.wallet-badge{
+  position:absolute;
+  top:18px;
+  left:18px;
+  padding:4px 12px;
+  border-radius:999px;
+  background:#d4af3722;
+  border:1px solid #d4af3755;
+  color:#f7d774;
+  font-size:.7rem;
+  font-weight:700;
+}
+
+.h1{font-size:1.35rem;font-weight:800;margin:0 0 6px}
+.btn{width:100%;padding:15px;border-radius:var(--rad);font-size:1rem;font-weight:700;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:active{transform:scale(.98)}
+.btn-pri{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;box-shadow:0 6px 24px #e6203055}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1000;box-shadow:0 6px 24px #d4af3744}
+.btn-ok{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff}
+.btn-danger{background:linear-gradient(135deg,#b91c1c,#ef4444);color:#fff}
+.btn-ghost{background:#ffffff0d;color:var(--txt);border:1px solid #ffffff1a}
+.btn-sm{padding:10px 14px;font-size:.88rem;border-radius:12px}
+.btn-xs{padding:6px 10px;font-size:.8rem;border-radius:8px}
+.inp{width:100%;padding:14px 16px;background:#0c0c14;border:1px solid #ffffff15;border-radius:var(--rad);color:var(--txt);font-size:1rem;display:block}
+.inp:focus{border-color:var(--pri);box-shadow:0 0 0 3px #e6203022;outline:0}
+textarea.inp{resize:vertical}
+.label{display:block;font-size:.85rem;color:var(--mut);margin:0 0 6px 4px}
+.field{margin-bottom:14px}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.top-logo{display:flex;align-items:center;gap:10px}
+.top-logo b{font-size:1.05rem;background:linear-gradient(135deg,#f7d774,#d4af37 60%,#e62030);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.grid-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{padding:16px 12px;background:var(--card);border:1px solid #ffffff10;border-radius:var(--rad);text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--txt);font-weight:600;font-size:.9rem}
+.tile:active{transform:scale(.97);background:var(--card2)}
+.tile-emoji{font-size:1.6rem}
+.tile-gold{border-color:#d4af3744;background:linear-gradient(135deg,#1a1206,#15100a)}
+.tile-danger{border-color:#ef444444;background:linear-gradient(135deg,#1c0808,#180808)}
+.tile-ok{border-color:#22c55e44;background:linear-gradient(135deg,#081a0e,#081510)}
+.notice{padding:14px 16px;border-radius:var(--rad);margin-bottom:14px;font-size:.9rem;line-height:1.7}
+.notice-info{background:#0d1a2e;border:1px solid #3b82f644;color:#93c5fd}
+.notice-ok{background:#081a0e;border:1px solid #22c55e44;color:#86efac}
+.notice-danger{background:#1c0808;border:1px solid #ef444444;color:#fca5a5}
+.notice-warn{background:#1a1408;border:1px solid #f59e0b44;color:#fcd34d}
+.mono{font-family:ui-monospace,Menlo,monospace;background:#000;padding:2px 8px;border-radius:6px;border:1px solid #ffffff10;color:var(--gold2);font-size:.85rem;display:inline-block}
+.list-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border-radius:12px;margin-bottom:8px;font-size:.9rem}
+.list-item .emoji{font-size:1.2rem}
+.list-item .flex1{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;word-break:break-all}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:700}
+.badge-ok{background:#22c55e22;color:#86efac;border:1px solid #22c55e44}
+.badge-danger{background:#ef444422;color:#fca5a5;border:1px solid #ef444444}
+.badge-gold{background:#d4af3722;color:#f7d774;border:1px solid #d4af3744}
+.captcha-box{background:#050508;border:2px solid #e6203055;border-radius:16px;padding:20px;margin-bottom:14px;text-align:center}
+#capCanvas{width:100%;max-width:340px;height:120px;border-radius:12px;background:#000;display:block;margin:0 auto 14px;border:1px solid #ffffff0d}
+.cap-num{color:var(--gold2);font-size:.85rem;margin-top:8px}
+.full-ban{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;z-index:9999}
+.full-ban h1{font-size:1.6rem;color:#ef4444;margin:0 0 20px}
+.full-ban p{color:var(--mut);font-size:1rem;margin:0;line-height:1.8}
+.full-ban .skull{font-size:5rem;margin-bottom:20px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.8}}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#ffffff1a,transparent);margin:18px 0}
+.kv{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #ffffff0a;font-size:.9rem;gap:10px}
+.kv:last-child{border:0}
+.kv span:first-child{color:var(--mut)}
+.kv span:last-child{font-weight:700;text-align:left;word-break:break-all}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:linear-gradient(135deg,#1a1206,#15100a);border:1px solid #d4af3733;border-radius:14px;padding:14px;text-align:center}
+.stat b{display:block;font-size:1.4rem;color:var(--gold2);font-weight:800;margin-bottom:4px}
+.stat span{font-size:.75rem;color:var(--mut)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#15151f;color:#fff;padding:12px 20px;border-radius:14px;border:1px solid #ffffff22;font-size:.9rem;z-index:99999;max-width:90vw}
+.toast.ok{border-color:#22c55e66;background:#0a1a10;color:#86efac}
+.toast.err{border-color:#ef444466;background:#1a0808;color:#fca5a5}
+.footer-note{text-align:center;color:var(--mut);font-size:.82rem;margin-top:24px;padding:14px;line-height:1.8}
+.footer-note b,.footer-note a{color:var(--gold2);text-decoration:none}
+.pill-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.pill{padding:4px 12px;border-radius:999px;font-size:.78rem;background:#ffffff0d;color:var(--mut);border:1px solid #ffffff10}
+.pill.on{background:#d4af3722;color:var(--gold2);border-color:#d4af3755;font-weight:700}
+.hidden{display:none!important}
+.copy-url{font-size:.72rem;color:var(--mut);word-break:break-all;background:#000;padding:8px 10px;border-radius:8px;border:1px solid #ffffff10;margin-top:6px}
+.img-preview{width:100%;max-height:160px;object-fit:contain;border-radius:12px;margin:8px 0;background:#000;border:1px solid #ffffff10}
+.img-slot{padding:14px;background:var(--card2);border-radius:14px;margin-bottom:12px;border:1px solid #ffffff0a}
+.img-slot-name{font-weight:700;font-size:.95rem}
+.img-slot-desc{color:var(--mut);font-size:.78rem;margin-bottom:8px}
+.support-fab{position:fixed;bottom:20px;left:20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#0088cc,#00a6e0);color:#fff;font-size:1.7rem;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,136,204,.55),0 0 0 3px #ffffff14;z-index:9000;border:0;animation:supportPulse 2.5s ease-in-out infinite;text-decoration:none}
+.support-fab:active{transform:scale(.93)}
+@keyframes supportPulse{0%,100%{box-shadow:0 8px 32px rgba(0,136,204,.55),0 0 0 3px #ffffff14}50%{box-shadow:0 8px 40px rgba(0,136,204,.85),0 0 0 3px #00a6e066,0 0 0 10px rgba(0,166,224,.15)}}
+</style>
+</head>
+<body>
+<div class="backup-bar" id="backupBar"></div>
+<div id="topnav" class="topnav"></div>
+<div id="app"></div>
+<a class="support-fab" href="https://t.me/HM_King14" target="_blank" rel="noopener" aria-label="الدعم">💭</a>
+<script>
+/* ============================================================
+   چيميل كاش — Final Version
+   ============================================================ */
+const CFG = {
+  SITE_NAME: 'چيميل كاش',
+  SUPPORT: '@HM_King14',
+  SUPPORT_URL: 'https://t.me/HM_King14',
+  CHANNEL_URL: 'https://t.me/+IYzWBoOTL6szOTVk',
+  CHECK_URL: 'https://gmailver.com/',
+  DB_KEY: 'gc_data_v1',
+  SESSION_KEY: 'gc_session',
+  BAN_KEY: 'gc_bans',
+  BACKUP_KEY: 'gc_last_backup',
+  BACKUP_COUNT_KEY: 'gc_backup_count',
+  BACKUP_HOURS: 30,
+  CAPTCHA_MAX_TRIES: 3,
+  CAPTCHA_BAN_MIN: 60,
+  DEFAULT_ADMIN: { username:'Hossam2012', password:'Hossam2012$' },
+  DEFAULTS: {
+    today_price: 5, leader_10: 7, leader_20: 8.5, leader_30: 10, leader_40: 11, leader_50: 13,
+    task_password: 'aass1122',
+    task_name: '💰 مهمة ربح - 5 ج 💸',
+    task_stopped: false, task_stopped_msg: '',
+    maintenance: false, total_accepted: 0, total_rejected: 0,
+  }
+};
+const LOGO_SVG = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="LOGO_CLASS"><defs><linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7d774"/><stop offset=".5" stop-color="#d4af37"/><stop offset="1" stop-color="#e62030"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="#0a0a0f"/><rect x="3" y="3" width="94" height="94" rx="21" fill="none" stroke="url(#lgrad)" stroke-width="1.2" stroke-opacity=".6"/><path d="M20 78 L20 30 Q20 22 27 22 L34 22 Q40 22 43 28 L50 42 L57 28 Q60 22 66 22 L73 22 Q80 22 80 30 L80 78" fill="none" stroke="url(#lgrad)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="68" r="4" fill="url(#lgrad)"/></svg>`;
+
+const DB = {
+  load(){ try{ const raw = localStorage.getItem(CFG.DB_KEY); if(!raw) return DB.fresh(); const d = JSON.parse(raw); return Object.assign(DB.fresh(), d); }catch(e){ return DB.fresh(); } },
+  fresh(){ return { settings:{...CFG.DEFAULTS}, workers:[], emails:[], withdrawals:[], referral_earnings:[], notifications:[], video:null, accounts:[], images:{}, phones:[] }; },
+  save(d){ try{ localStorage.setItem(CFG.DB_KEY, JSON.stringify(d)); }catch(e){ toast('⚠️ الذاكرة ممتلئة', 'err'); } },
+  get(){ return DB.load(); },
+  update(fn){ const d = DB.load(); fn(d); DB.save(d); return d; }
+};
+const Session = {
+  get(){ try{ return JSON.parse(localStorage.getItem(CFG.SESSION_KEY)||'null'); }catch(e){ return null; } },
+  set(s){ localStorage.setItem(CFG.SESSION_KEY, JSON.stringify(s)); },
+  clear(){ localStorage.removeItem(CFG.SESSION_KEY); }
+};
+const Bans = {
+  all(){ try{ return JSON.parse(localStorage.getItem(CFG.BAN_KEY)||'{}'); }catch(e){ return {}; } },
+  save(b){ localStorage.setItem(CFG.BAN_KEY, JSON.stringify(b)); },
+  isBanned(key){ const b = Bans.all(); const e = b[key]; if(!e) return false; if(Date.now() > e.until){ delete b[key]; Bans.save(b); return false; } return true; },
+  ban(key, minutes){ const b = Bans.all(); b[key] = { until: Date.now() + minutes*60*1000 }; Bans.save(b); },
+  remaining(key){ const b = Bans.all(); const e = b[key]; if(!e) return 0; return Math.max(0, Math.ceil((e.until - Date.now())/60000)); },
+  fingerprint(){ let fp = localStorage.getItem('gc_fp'); if(!fp){ fp = 'fp_' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('gc_fp', fp); } return fp; }
+};
+const Captcha = {
+  current: null,
+  draw(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let code = ''; for(let i=0;i<6;i++) code += chars[Math.floor(Math.random()*chars.length)];
+    Captcha.current = code;
+    const cv = document.getElementById('capCanvas'); if(!cv) return;
+    const rect = cv.getBoundingClientRect();
+    const W = cv.width = Math.max(600, rect.width * 2); const H = cv.height = 240;
+    const ctx = cv.getContext('2d'); ctx.fillStyle = '#000'; ctx.fillRect(0,0,W,H);
+    for(let i=0;i<6;i++){ ctx.strokeStyle = `hsla(${Math.random()*360},70%,60%,.35)`; ctx.lineWidth = 2 + Math.random()*2; ctx.beginPath(); ctx.moveTo(Math.random()*W, Math.random()*H); ctx.bezierCurveTo(Math.random()*W, Math.random()*H, Math.random()*W, Math.random()*H, Math.random()*W, Math.random()*H); ctx.stroke(); }
+    for(let i=0;i<60;i++){ ctx.fillStyle = `hsla(${Math.random()*360},80%,70%,.5)`; ctx.beginPath(); ctx.arc(Math.random()*W, Math.random()*H, 1+Math.random()*2, 0, Math.PI*2); ctx.fill(); }
+    const fontSize = 140; ctx.font = `900 ${fontSize}px system-ui`; ctx.textBaseline = 'middle'; const step = W / 6;
+    for(let i=0;i<6;i++){ const ch = code[i]; ctx.save(); ctx.translate(step*i + step/2, H/2 + (Math.random()*30 - 15)); ctx.rotate(Math.random()*0.5 - 0.25); ctx.fillStyle = `hsl(${Math.random()*60 + 340},80%,${55+Math.random()*20}%)`; if(Math.random()>0.5){ ctx.shadowColor = '#e62030'; ctx.shadowBlur = 15; } ctx.fillText(ch, -fontSize*0.35, 0); ctx.restore(); }
+  },
+  verify(input){ return Captcha.current && (input||'').trim() === Captcha.current; }
+};
+const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg, type=''){ const el = document.createElement('div'); el.className = 'toast ' + type; el.textContent = msg; document.body.appendChild(el); setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(), 300); }, 2800); }
+function fmt(n){ return Number(n||0).toFixed(2); }
+function nowISO(){ return new Date().toISOString(); }
+function download(content, filename, mime='application/json'){ const blob = new Blob([content], {type:mime}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500); }
+function readAsText(file){ return new Promise((res,rej)=>{ const r = new FileReader(); r.onload = ()=>res(r.result); r.onerror = rej; r.readAsText(file); }); }
+function getImage(key){ const d = DB.get(); return (d.images && d.images[key]) || null; }
+function logoHTML(cls){ const custom = getImage('logo'); if(custom) return `<img src="${custom}" class="${cls}" alt="logo" style="object-fit:cover">`; return LOGO_SVG.replace('LOGO_CLASS', cls); }
+function applyBg(cls, imgKey){ document.body.className = cls; document.body.style.backgroundImage = ''; if(imgKey){ const img = getImage(imgKey); if(img){ document.body.style.backgroundImage = `linear-gradient(rgba(10,10,15,.82), rgba(10,10,15,.94)), url('${img}')`; } } }
+function compressImage(file, maxW, maxH, quality, cb){ const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = ()=>{ let w = img.width, h = img.height; const r = Math.min(maxW/w, maxH/h, 1); w = Math.round(w*r); h = Math.round(h*r); const c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h); cb(c.toDataURL('image/jpeg', quality)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }
+function normalizePhone(s){ return String(s||'').replace(/[^\d]/g,''); }
+function humanAgo(ms){ const s = Math.floor(ms/1000); if(s < 60) return 'من ثواني'; const m = Math.floor(s/60); if(m < 60) return `${m} دقيقة`; const h = Math.floor(m/60); if(h < 24) return `${h} ساعة`; const d = Math.floor(h/24); return `${d} يوم`; }
+function humanIn(ms){ const s = Math.floor(ms/1000); if(s <= 0) return 'الآن'; const m = Math.floor(s/60); if(m < 60) return `${m} د`; const h = Math.floor(m/60); if(h < 24) return `${h} س`; const d = Math.floor(h/24); return `${d} ي`; }
+
+/* ============ Backup ============ */
+const Backup = {
+  last(){ return Number(localStorage.getItem(CFG.BACKUP_KEY)||'0'); },
+  count(){ return Number(localStorage.getItem(CFG.BACKUP_COUNT_KEY)||'0'); },
+  nextIn(){ const last = Backup.last(); if(!last) return 0; return (CFG.BACKUP_HOURS*3600000) - (Date.now() - last); },
+  trigger(manual=false){
+    try{
+      const d = DB.get(); d._backupAt = nowISO(); d._manual = manual;
+      const content = JSON.stringify(d, null, 2);
+      const ts = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+      download(content, `gmail_cach_backup_${ts}.json`);
+      localStorage.setItem(CFG.BACKUP_KEY, String(Date.now()));
+      localStorage.setItem(CFG.BACKUP_COUNT_KEY, String(Backup.count() + 1));
+      return { size: content.length, records: (d.workers||[]).length + (d.emails||[]).length + (d.withdrawals||[]).length };
+    }catch(e){ console.error('backup error:', e); return null; }
+  },
+  autoCheck(){
+    const last = Backup.last();
+    if(!last || (Date.now() - last) >= CFG.BACKUP_HOURS * 3600000){
+      const r = Backup.trigger(false);
+      if(r) toast('💾 تم نسخ احتياطي تلقائي', 'ok');
+    }
+    Backup.renderBar();
+  },
+  renderBar(){
+    const bar = document.getElementById('backupBar');
+    if(!bar) return;
+    const s = Session.get();
+    const v = Router.current?.view || '';
+    const hide = !s || v === 'login' || v === 'captcha' || v === 'banned' || v === 'phone';
+    if(hide){ bar.classList.remove('show'); bar.innerHTML = ''; const nav = document.getElementById('topnav'); if(nav) nav.classList.remove('has-backup'); return; }
+    bar.classList.add('show');
+    const nav = document.getElementById('topnav'); if(nav) nav.classList.add('has-backup');
+
+    // ===== ADMIN: 3 bars for backup =====
+    if(s.role === 'admin'){
+      const last = Backup.last(); const nextIn = Backup.nextIn();
+      const db = DB.get();
+      const dbSizeKB = (JSON.stringify(db).length / 1024).toFixed(1);
+      const records = (db.workers||[]).length + (db.emails||[]).length + (db.withdrawals||[]).length;
+      const count = Backup.count();
+      let lastCls = 'bk-item'; let lastVal = '—';
+      if(last){ lastVal = humanAgo(Date.now() - last); lastCls += (Date.now() - last) < CFG.BACKUP_HOURS*3600000 ? ' active' : ' warn'; }
+      else lastCls += ' danger';
+      let nextCls = 'bk-item'; let nextVal = '—';
+      if(last){
+        if(nextIn <= 0){ nextVal = 'الآن'; nextCls += ' warn'; }
+        else if(nextIn < 3600000){ nextVal = humanIn(nextIn); nextCls += ' warn'; }
+        else { nextVal = humanIn(nextIn); nextCls += ' active'; }
+      }
+      bar.innerHTML = `
+        <div class="${lastCls}"><div class="bk-ic">💾</div><div class="bk-tx">آخر نسخة</div><div class="bk-val">${esc(lastVal)}</div></div>
+        <div class="${nextCls}"><div class="bk-ic">⏰</div><div class="bk-tx">القادمة</div><div class="bk-val">${esc(nextVal)}</div></div>
+        <div class="bk-item clickable" onclick="manualBackupNow()"><div class="bk-ic">📤</div><div class="bk-tx">${dbSizeKB} KB • ${records} عنصر</div><div class="bk-val">نسخة الآن (${count})</div></div>`;
+      return;
+    }
+
+    // ===== WORKER: 3 bars (pending emails / pending money / check) =====
+    const db = DB.get();
+    const worker = db.workers.find(w => w.id === s.id);
+    if(!worker) return;
+    const myPending = db.emails.filter(e => e.workerId === worker.id && e.status === 'pending');
+    const pendingCount = myPending.length;
+    const pendingMoney = myPending.reduce((a, e) => a + e.price, 0);
+    let bar1Cls = 'bk-item';
+    if(pendingCount === 0) bar1Cls += ' active';
+    else if(pendingCount < 5) bar1Cls += ' active';
+    else bar1Cls += ' warn';
+    let bar2Cls = 'bk-item';
+    if(pendingMoney > 0) bar2Cls += ' warn';
+    else bar2Cls += ' active';
+    bar.innerHTML = `
+      <div class="${bar1Cls}"><div class="bk-ic">📧</div><div class="bk-tx">إيميلات معلقة</div><div class="bk-val">${pendingCount}</div></div>
+      <div class="${bar2Cls}"><div class="bk-ic">💰</div><div class="bk-tx">أرباح معلقة</div><div class="bk-val">${fmt(pendingMoney)} ج</div></div>
+      <div class="bk-item clickable" onclick="window.open('${CFG.CHECK_URL}','_blank','noopener')"><div class="bk-ic">🔍</div><div class="bk-tx">فحص حساباتك</div><div class="bk-val" style="color:var(--gold2)">اضغط للفحص ⚡</div></div>`;
+  }
+};
+window.manualBackupNow = function(){
+  const r = Backup.trigger(true);
+  if(r){ toast(`✅ تم النسخ — ${r.records} عنصر`, 'ok'); Backup.renderBar(); }
+  else toast('❌ فشل النسخ', 'err');
+};
+
+/* ============ Phone Prompt ============ */
+function needsPhone(session){
+  if(!session || session.role === 'admin') return false;
+  const db = DB.get(); const w = db.workers.find(x => x.id === session.id);
+  return w && !w.phone;
+}
+function viewPhonePrompt(){
+  applyBg('work-bg', 'work');
+  document.getElementById('app').innerHTML = `
+    <div class="wrap center">
+      ${logoHTML('logo-hero')}
+      <h1 class="brand">${CFG.SITE_NAME}</h1>
+      <p class="brand-sub">🛡 خطوة أمان واحدة فقط</p>
+      <div class="card card-gold" style="width:100%;max-width:420px">
+        <div class="notice notice-info">📱 سجل رقم هاتفك مرة واحدة — لحمايتك من الاحتيال ومنع تكرار الحسابات</div>
+        <div class="field"><label class="label">رقم الهاتف</label><input id="phInput" class="inp" type="tel" placeholder="01xxxxxxxxx" inputmode="tel" autocapitalize="off"></div>
+        <button class="btn btn-gold" onclick="savePhone()">✅ حفظ ومتابعة</button>
+        <div class="notice notice-warn" style="margin-top:14px;font-size:.8rem">⚠️ رقمك محفوظ بشكل آمن</div>
+      </div>
+    </div>`;
+  document.getElementById('phInput').focus();
+  document.getElementById('phInput').addEventListener('keydown', e => { if(e.key==='Enter') savePhone(); });
+}
+window.savePhone = function(){
+  const s = Session.get(); if(!s) return Router.go('login');
+  const ph = normalizePhone(document.getElementById('phInput').value);
+  if(ph.length < 10){ toast('❌ رقم غير صحيح', 'err'); return; }
+  const db = DB.get();
+  const existing = db.workers.find(w => w.phone === ph && w.id !== s.id);
+  if(existing){ toast('🚫 الرقم مسجل من حساب آخر', 'err'); Bans.ban(Bans.fingerprint(), 60*24*30); setTimeout(()=>Router.go('banned', { reason: '🚫 تم إيقافك — الرقم مسجل من حساب آخر' }), 1200); return; }
+  DB.update(d => { const w = d.workers.find(x => x.id === s.id); if(w) w.phone = ph; if(!d.phones) d.phones = []; if(!d.phones.includes(ph)) d.phones.push(ph); });
+  toast('✅ تم حفظ الرقم', 'ok'); Router.go('dashboard');
+};
+
+/* ============ Top Nav ============ */
+function renderTopNav(){
+  const s = Session.get();
+  const nav = document.getElementById('topnav');
+  const v = Router.current?.view || '';
+  const hide = !s || v === 'login' || v === 'captcha' || v === 'banned' || v === 'phone';
+  if(hide){ nav.classList.remove('show'); nav.innerHTML = ''; return; }
+  nav.classList.add('show');
+  let items;
+  if(s.role === 'admin'){
+    items = [
+      { icon:'🏠', label:'الرئيسية', action:"Router.go('admin')" },
+      { icon:'📨', label:'المراجعة', action:"Router.go('admin_review')" },
+      { icon:'💸', label:'السحب', action:"Router.go('admin_withdrawals')" },
+      { icon:'👥', label:'العمال', action:"Router.go('admin_workers')" },
+      { icon:'🔍', label:'فحص حساباتك', action:"window.open('"+CFG.CHECK_URL+"','_blank','noopener')" },
+      { icon:'🎬', label:'الفيديو', action:"Router.go('admin_video')" },
+      { icon:'🎨', label:'الصور', action:"Router.go('admin_images')" },
+    ];
+  } else {
+    items = [
+      { icon:'🏠', label:'الرئيسية', action:"Router.go('dashboard')" },
+      { icon:'📧', label:'المهمة', action:"Router.go('task')" },
+      { icon:'📨', label:'إيميلاتي', action:"Router.go('myemails')" },
+      { icon:'🎁', label:'دعوة', action:"Router.go('invite')" },
+      { icon:'🔍', label:'فحص حساباتك', action:"window.open('"+CFG.CHECK_URL+"','_blank','noopener')" },
+      { icon:'🎬', label:'الفيديو', action:"Router.go('video')" },
+      { icon:'🗃', label:'معلومات', action:"Router.go('info')" },
+    ];
+  }
+  nav.innerHTML = items.map(it => `<button class="nav-item" onclick="${it.action}"><span>${it.icon}</span><span>${it.label}</span></button>`).join('');
+  Backup.renderBar();
+}
+const Router = { current: null, go(view, params={}){ Router.current = { view, params }; render(view, params); renderTopNav(); window.scrollTo(0,0); } };
+
+/* ============ Views ============ */
+function viewCaptcha(){
+  applyBg('captcha-bg', 'cap');
+  const fp = Bans.fingerprint();
+  if(Bans.isBanned(fp)) return viewBanned(`تم إيقافك مؤقتاً. حاول بعد ${Bans.remaining(fp)} دقيقة.`);
+  const tries = Number(localStorage.getItem('gc_cap_tries')||'0');
+  document.getElementById('app').innerHTML = `<div class="wrap center">${logoHTML('logo-hero')}<h1 class="brand">${CFG.SITE_NAME}</h1><p class="brand-sub">تحقق أنك إنسان 🛡</p><div class="card card-glass" style="width:100%;max-width:420px"><div class="captcha-box"><canvas id="capCanvas"></canvas><div class="cap-num">أدخل الحروف والأرقام بالضبط</div></div><input id="capInput" class="inp" placeholder="اكتب هنا..." autocomplete="off" autocapitalize="off"><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-ghost" onclick="Captcha.draw();document.getElementById('capInput').value=''">🔄 جديدة</button><button class="btn btn-gold" onclick="submitCaptcha()">✅ تحقق</button></div><div class="cap-num" style="margin-top:12px">المتبقي: <b>${CFG.CAPTCHA_MAX_TRIES - tries}</b></div></div></div>`;
+  setTimeout(()=>{ Captcha.draw(); document.getElementById('capInput').focus(); }, 50);
+  document.getElementById('capInput').addEventListener('keydown', e => { if(e.key==='Enter') submitCaptcha(); });
+}
+window.submitCaptcha = function(){
+  const fp = Bans.fingerprint(); const input = document.getElementById('capInput').value;
+  if(Captcha.verify(input)){ localStorage.setItem('gc_cap_ok','1'); localStorage.removeItem('gc_cap_tries'); Router.go('login'); }
+  else {
+    let tries = Number(localStorage.getItem('gc_cap_tries')||'0') + 1;
+    if(tries >= CFG.CAPTCHA_MAX_TRIES){ Bans.ban(fp, CFG.CAPTCHA_BAN_MIN); localStorage.removeItem('gc_cap_tries'); Router.go('banned', { reason: `تجاوزت المحاولات. حظر ${CFG.CAPTCHA_BAN_MIN} دقيقة.` }); return; }
+    localStorage.setItem('gc_cap_tries', String(tries));
+    toast(`❌ خطأ — المتبقي: ${CFG.CAPTCHA_MAX_TRIES - tries}`, 'err');
+    Captcha.draw(); document.getElementById('capInput').value = '';
+  }
+};
+function viewLogin(){
+  applyBg('login-bg', 'admin');
+  document.getElementById('app').innerHTML = `<div class="wrap center">${logoHTML('logo-hero')}<h1 class="brand">${CFG.SITE_NAME}</h1><p class="brand-sub">سجّل دخولك</p><div class="card" style="width:100%;max-width:420px"><div class="field"><label class="label">اسم المستخدم</label><input id="lgUser" class="inp" placeholder="username" autocomplete="username" autocapitalize="off"></div><div class="field"><label class="label">كلمة المرور</label><input id="lgPass" class="inp" type="password" placeholder="••••••"></div><button class="btn btn-pri" onclick="submitLogin()">🔐 تسجيل الدخول</button><div class="divider"></div><p style="text-align:center;color:var(--mut);font-size:.85rem;margin:0;line-height:1.9">للعثور على بيانات كلم ادارة عبر تيليجرام:<br><b style="color:var(--gold2);font-size:1rem">${CFG.SUPPORT}</b></p></div></div>`;
+  document.getElementById('lgUser').focus();
+  document.getElementById('lgPass').addEventListener('keydown', e => { if(e.key==='Enter') submitLogin(); });
+}
+window.submitLogin = function(){
+  const fp = Bans.fingerprint();
+  if(Bans.isBanned(fp)){ Router.go('banned', { reason: `تم إيقافك مؤقتاً. بعد ${Bans.remaining(fp)} دقيقة.` }); return; }
+  const u = document.getElementById('lgUser').value.trim(); const p = document.getElementById('lgPass').value;
+  if(!u || !p){ toast('أدخل البيانات', 'err'); return; }
+  const db = DB.get(); let acc = null;
+  if(u === CFG.DEFAULT_ADMIN.username && p === CFG.DEFAULT_ADMIN.password) acc = { id:'admin', username:u, role:'admin', banned:false };
+  const worker = (db.workers||[]).find(w => w.username === u && w.password === p);
+  if(worker){ if(worker.banned){ Session.set({...worker}); Router.go('banned', { reason: 'تم غلق حسابك 💥🛡' }); return; } acc = worker; }
+  if(!acc){
+    let fail = Number(localStorage.getItem('gc_lg_fail')||'0') + 1;
+    localStorage.setItem('gc_lg_fail', String(fail));
+    if(fail >= 5){ Bans.ban(fp, CFG.CAPTCHA_BAN_MIN); localStorage.removeItem('gc_lg_fail'); Router.go('banned', { reason: `تجاوزت المحاولات. حظر ${CFG.CAPTCHA_BAN_MIN} دقيقة.` }); return; }
+    toast(`❌ بيانات خاطئة (${fail}/5)`, 'err'); return;
+  }
+  localStorage.removeItem('gc_lg_fail'); Session.set(acc);
+  if(acc.role === 'admin'){ Router.go('admin'); return; }
+  if(needsPhone(acc)){ Router.go('phone'); return; }
+  Router.go('dashboard');
+};
+function viewBanned(params){
+  document.body.className = ''; document.body.style.backgroundImage = '';
+  const reason = params.reason || 'تم غلق حسابك 💥🛡';
+  document.getElementById('app').innerHTML = `<div class="full-ban"><div class="skull">💥</div><h1>تم غلق حسابك<br>بسبب عمليات تخريب... 💥🛡</h1><p>${esc(reason)}</p><div style="margin-top:30px;color:var(--mut);font-size:.85rem">للاستفسار: <b style="color:var(--gold2)">${CFG.SUPPORT}</b></div></div>`;
+}
+
+/* ============ Dashboard (Worker) ============ */
+function viewDashboard(){
+  const s = Session.get(); if(!s){ Router.go('login'); return; }
+  if(s.role === 'admin'){ Router.go('admin'); return; }
+  if(needsPhone(s)){ Router.go('phone'); return; }
+  const db = DB.get(); const worker = db.workers.find(w => w.id === s.id);
+  if(!worker){ Session.clear(); Router.go('login'); return; }
+  if(worker.banned){ Router.go('banned', { reason: 'تم غلق حسابك 💥🛡' }); return; }
+  applyBg('work-bg', 'work');
+  const myEmails = db.emails.filter(e => e.workerId === worker.id && e.status === 'pending');
+  const totalPending = myEmails.reduce((a,e) => a+e.price, 0);
+  const balance = worker.balance || 0;
+  const notifs = (db.notifications||[]).slice(-3).reverse();
+  document.getElementById('app').innerHTML = `
+    <div class="wrap">
+      <div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>${CFG.SITE_NAME}</b></div><button class="btn btn-ghost btn-xs" onclick="logout()">🚪 خروج</button></div>
+
+      <!-- Wallet Hero Card -->
+      <div class="wallet-hero" onclick="Router.go('withdraw')">
+        <div class="wallet-badge">${worker.role==='leader'?'👑 ليدر':'👤 عامل'}</div>
+        <div class="wallet-hero-inner">
+          <div class="wallet-title">چيميل كاش</div>
+          <div class="wallet-amount">${fmt(balance)}<small>ج</small></div>
+          <div class="wallet-sub">رصيدك الحالي — اضغط للسحب</div>
+        </div>
+      </div>
+
+      ${notifs.length?`<div class="card"><div style="font-size:.85rem;color:var(--mut);margin-bottom:8px">📢 آخر الإشعارات</div>${notifs.map(n=>`<div class="list-item"><span class="emoji">📢</span><span class="flex1">${esc(n.text)}</span></div>`).join('')}</div>`:''}
+
+      <div class="stat-grid">
+        <div class="stat"><b>${myEmails.length}</b><span>إيميلات معلقة</span></div>
+        <div class="stat"><b>${fmt(totalPending)}</b><span>أرباح معلقة (ج)</span></div>
+      </div>
+
+      <div class="grid-btns">
+        <button class="tile" onclick="Router.go('task')"><span class="tile-emoji">📧</span><span>${esc(db.settings.task_name)}</span></button>
+        <button class="tile" onclick="Router.go('myemails')"><span class="tile-emoji">📨</span><span>ايميلاتي</span></button>
+        <button class="tile" onclick="Router.go('invite')"><span class="tile-emoji">🎁</span><span>دعوة أصدقاء</span></button>
+        <button class="tile" onclick="Router.go('video')"><span class="tile-emoji">🎬</span><span>فيديو شرح</span></button>
+        <button class="tile" onclick="Router.go('info')"><span class="tile-emoji">🗃</span><span>معلومات</span></button>
+        <button class="tile" onclick="window.open('${CFG.CHECK_URL}','_blank','noopener')"><span class="tile-emoji">🔍</span><span>فحص حساباتك</span></button>
+      </div>
+
+      <div class="footer-note">💬 للدعم: <a href="${CFG.SUPPORT_URL}" target="_blank">${CFG.SUPPORT}</a><br><span style="font-size:.7rem;opacity:.6">📱 ${esc(worker.phone||'—')}</span></div>
+    </div>`;
+}
+
+function viewTask(){
+  const s = Session.get(); if(!s||s.role==='admin'){ Router.go('login'); return; }
+  if(needsPhone(s)){ Router.go('phone'); return; }
+  const db = DB.get(); const st = db.settings;
+  if(st.task_stopped){ applyBg('work-bg','work'); document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><button class="btn btn-ghost btn-xs" onclick="Router.go('dashboard')">← رجوع</button></div><div class="notice notice-warn">${esc(st.task_stopped_msg||'⏸ المهمة متوقفة')}</div></div>`; return; }
+  const worker = db.workers.find(w => w.id === s.id); const isLeader = worker?.role === 'leader';
+  const price = isLeader ? getLeaderPrice(1, db) : Number(st.today_price);
+  applyBg('work-bg','work');
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>مهمة ربح</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('dashboard')">← رجوع</button></div><div class="card"><div class="notice notice-info">${isLeader?`👑 ليدر — الحد الأدنى 10 حسابات<br>سعر الحساب: <b>${fmt(price)} ج</b>`:`💰 سعر الحساب اليومي: <b>${fmt(price)} ج</b>`}</div><div class="field"><label class="label">أرسل الحسابات (كل واحد في سطر)</label><textarea id="taskEmails" class="inp" rows="6" placeholder="user123@gmail.com"></textarea></div><div class="field"><label class="label">كلمة مرور المهمة</label><input id="taskPass" class="inp" placeholder="ادخل كلمة المرور"></div><button class="btn btn-gold" onclick="submitTask()">📤 إرسال</button></div>${isLeader?`<div class="card card-glass"><div style="font-size:.85rem;color:var(--mut);line-height:1.9">${leaderPricesHTML(db)}</div></div>`:''}</div>`;
+}
+function leaderPricesHTML(db){ const s = db.settings; return `<b style="color:var(--gold2)">أسعار الليدر:</b><br>10 ← ${s.leader_10}ج | 20 ← ${s.leader_20}ج<br>30 ← ${s.leader_30}ج | 40 ← ${s.leader_40}ج<br>50 ← ${s.leader_50}ج<br><br><span style="color:var(--warn)">⚠️ الحد الأدنى 10 حسابات</span>`; }
+function getLeaderPrice(count, db){ const s = db.settings; if(count>=50) return +s.leader_50; if(count>=40) return +s.leader_40; if(count>=30) return +s.leader_30; if(count>=20) return +s.leader_20; return +s.leader_10; }
+window.submitTask = function(){
+  const s = Session.get(); if(!s||s.role==='admin') return;
+  const raw = document.getElementById('taskEmails').value || ''; const pass = document.getElementById('taskPass').value || '';
+  const db = DB.get(); if(pass !== db.settings.task_password){ toast('❌ كلمة المرور غير صحيحة', 'err'); return; }
+  const emails = [...new Set(raw.split(/\n|,/).map(x=>x.trim().toLowerCase()).filter(Boolean))];
+  if(!emails.length){ toast('أرسل حساب واحد على الأقل', 'err'); return; }
+  const worker = db.workers.find(w => w.id === s.id); const isLeader = worker?.role === 'leader';
+  if(isLeader && emails.length < 10){ toast('الحد الأدنى 10 حسابات للليدر', 'err'); return; }
+  if(!isLeader && emails.length > 9){ toast('الحد الأقصى 9 حسابات', 'err'); return; }
+  const valid = []; const invalid = [];
+  for(const em of emails){ const ok = verifyEmail(em, db); if(ok.ok) valid.push(em); else invalid.push(`${em} — ${ok.err}`); }
+  if(invalid.length){ alert(`تم رفض ${invalid.length}:\n\n${invalid.slice(0,8).join('\n')}`); return; }
+  const price = isLeader ? getLeaderPrice(valid.length, db) : Number(db.settings.today_price);
+  DB.update(d => { for(const em of valid){ d.emails.push({ id:'e_'+Math.random().toString(36).slice(2), workerId:worker.id, email:em, password:pass, price, status:'pending', createdAt:nowISO() }); } });
+  toast(`✅ تم إرسال ${valid.length}`, 'ok'); Router.go('dashboard');
+};
+function verifyEmail(email, db){
+  if(!/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) return {ok:false, err:'صيغة غير صحيحة'};
+  const local = email.split('@')[0];
+  if(/01\d{9}/.test(local)) return {ok:false, err:'رقم هاتف'};
+  if(/\d{10,}/.test(local)) return {ok:false, err:'أرقام كثيرة'};
+  if(local.length<6 || local.length>25) return {ok:false, err:'طول غير مناسب'};
+  const m = local.match(/^([a-zA-Z]+)(\d{3,4})$/); if(!m) return {ok:false, err:'اسم + 3-4 أرقام'};
+  const name = m[1].toLowerCase();
+  const allNames = ['liam','noah','oliver','ethan','james','lucas','henry','benjamin','jack','daniel','alexander','michael','william','matthew','david','joseph','samuel','john','ryan','nathan','adam','leo','dylan','max','oscar','jacob','charlie','harry','thomas','george','arthur','edward','logan','mason','isaac','sebastian','aiden','luke','theo','owen','caleb','wyatt','julian','carter','hunter','grayson','aaron','connor','adrian','jason','brandon','kevin','justin','tyler','austin','evan','cameron','jordan','blake','derek','eric','frank','gabriel','isaiah','jaxon','kai','landon','miles','nolan','parker','roman','sawyer','silas','tristan','vincent','xavier','zachary','emma','olivia','ava','sophia','isabella','mia','amelia','emily','charlotte','harper','evelyn','abigail','ella','scarlett','grace','chloe','lily','sofia','aria','zoe','hannah','layla','nora','mila','ellie','lucy','maya','stella','ivy','alice','ruby','violet','luna','clara','hazel','aurora','naomi','eliza','freya','eva','sarah','anna','julia','rose','leah','bella','nina','kate','zara','daisy','elena','faith','gabriella','hailey','isla','jade','kylie','lara','madison','natalie','paige','quinn','riley','savannah','taylor','valerie','willow','yara'];
+  if(!allNames.some(n => name.includes(n))) return {ok:false, err:'اسم غير معتمد'};
+  if(db.emails.some(e => e.email === email && e.status==='pending')) return {ok:false, err:'مستخدم مسبقاً'};
+  return {ok:true};
+}
+function viewMyEmails(){
+  const s = Session.get(); if(!s||s.role==='admin'){ Router.go('login'); return; }
+  if(needsPhone(s)){ Router.go('phone'); return; }
+  const db = DB.get(); const list = db.emails.filter(e => e.workerId === s.id);
+  const pending = list.filter(e => e.status === 'pending'); const totalPending = pending.reduce((a,e) => a+e.price, 0);
+  applyBg('work-bg','work');
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>ايميلاتي</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('dashboard')">← رجوع</button></div><div class="stat-grid"><div class="stat"><b>${pending.length}</b><span>معلقة</span></div><div class="stat"><b>${fmt(totalPending)}</b><span>قيمة (ج)</span></div></div><div class="card">${list.length? list.map(e=>`<div class="list-item"><span class="emoji">📧</span><span class="flex1">${esc(e.email)}</span><span class="badge ${e.status==='pending'?'badge-gold':e.status==='accepted'?'badge-ok':'badge-danger'}">${e.status==='pending'?'معلق':e.status==='accepted'?'مقبول':'مرفوض'}</span></div>`).join('') : `<div style="text-align:center;color:var(--mut);padding:20px">📭 لا يوجد</div>`}</div></div>`;
+}
+function viewWithdraw(){
+  const s = Session.get(); if(!s||s.role==='admin'){ Router.go('login'); return; }
+  if(needsPhone(s)){ Router.go('phone'); return; }
+  const db = DB.get(); const worker = db.workers.find(w => w.id === s.id); const bal = worker?.balance || 0;
+  applyBg('work-bg','work');
+  document.getElementById('app').innerHTML = `
+    <div class="wrap">
+      <div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>سحب الأرباح</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('dashboard')">← رجوع</button></div>
+
+      <div class="wallet-hero">
+        <div class="wallet-hero-inner">
+          <div class="wallet-title">چيميل كاش</div>
+          <div class="wallet-amount">${fmt(bal)}<small>ج</small></div>
+          <div class="wallet-sub">رصيدك الحالي</div>
+        </div>
+      </div>
+
+      ${bal >= 10 ? `
+        <div class="card">
+          <div class="field"><label class="label">رقم المحفظة / Binance ID</label><input id="wdAddr" class="inp" placeholder="01xxxxxxxxx"></div>
+          <button class="btn btn-ok" onclick="submitWithdraw()">📤 إرسال طلب السحب</button>
+        </div>` : `<div class="notice notice-warn">⚠️ الحد الأدنى للسحب 10 ج</div>`}
+    </div>`;
+}
+window.submitWithdraw = function(){
+  const s = Session.get(); if(!s||s.role==='admin') return;
+  const addr = (document.getElementById('wdAddr').value||'').trim();
+  if(!addr || addr.length<5){ toast('عنوان غير صحيح', 'err'); return; }
+  const db = DB.get(); const w = db.workers.find(w => w.id === s.id);
+  if(!w || w.balance < 10){ toast('رصيدك أقل من 10 ج', 'err'); return; }
+  const amount = w.balance; const method = /^01\d{9}$/.test(addr) ? 'Cash Wallet' : 'Binance';
+  DB.update(d => { const w2 = d.workers.find(x => x.id === s.id); w2.balance = 0; d.withdrawals.push({ id:'w_'+Math.random().toString(36).slice(2), workerId:s.id, amount, address:addr, method, status:'pending', createdAt:nowISO() }); });
+  toast('✅ تم الإرسال', 'ok'); Router.go('dashboard');
+};
+function viewInvite(){
+  const s = Session.get(); if(!s||s.role==='admin'){ Router.go('login'); return; }
+  if(needsPhone(s)){ Router.go('phone'); return; }
+  const db = DB.get(); const earnings = (db.referral_earnings||[]).filter(r => r.workerId === s.id);
+  const total = earnings.reduce((a,r) => a+r.amount, 0);
+  const link = `${location.origin}${location.pathname}?ref=${s.id}`;
+  applyBg('work-bg','work');
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>دعوة</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('dashboard')">← رجوع</button></div><div class="card card-gold"><div class="stat"><b>${fmt(total)}</b><span>إجمالي أرباح الدعوات</span></div></div><div class="card"><label class="label">رابط الدعوة</label><div class="copy-url">${esc(link)}</div><button class="btn btn-pri" style="margin-top:10px" onclick="copyLink('${esc(link)}')">📋 نسخ</button></div><div class="notice notice-info" style="margin-top:14px">🛡 حماية: رقم الهاتف مسجل — لا يمكن ربح دعوات مكررة.</div></div>`;
+}
+window.copyLink = link => navigator.clipboard.writeText(link).then(()=>toast('✅ تم النسخ','ok')).catch(()=>{ const ta = document.createElement('textarea'); ta.value=link; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('✅','ok'); });
+function viewVideo(){
+  const s = Session.get(); if(!s||s.role==='admin'){ Router.go('login'); return; }
+  if(needsPhone(s)){ Router.go('phone'); return; }
+  const db = DB.get();
+  applyBg('work-bg','work');
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>فيديو الشرح</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('dashboard')">← رجوع</button></div>${db.video ? `<div class="card" style="padding:0;overflow:hidden"><video src="${esc(db.video)}" controls style="width:100%;display:block;background:#000"></video></div><a href="${esc(db.video)}" download="video_explain" class="btn btn-gold" style="text-decoration:none;display:flex">⬇️ تحميل الفيديو</a>` : `<div class="notice notice-warn">⚠️ لا يوجد فيديو</div>`}</div>`;
+}
+function viewInfo(){
+  const s = Session.get(); if(!s||s.role==='admin'){ Router.go('login'); return; }
+  if(needsPhone(s)){ Router.go('phone'); return; }
+  applyBg('work-bg','work');
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>معلومات</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('dashboard')">← رجوع</button></div><div class="card"><div class="notice notice-info">🕐 بتوقيت مصر 🇪🇬</div></div><div class="card"><div class="kv"><span>مدة المراجعة</span><span>24 ساعة</span></div><div class="kv"><span>الحد الأدنى للسحب</span><span>10 ج</span></div><div class="kv"><span>فحص الحسابات</span><span><a href="${CFG.CHECK_URL}" target="_blank" style="color:var(--gold2)">فتح</a></span></div><div class="kv"><span>الدعم</span><span><a href="${CFG.SUPPORT_URL}" target="_blank" style="color:var(--gold2)">${CFG.SUPPORT}</a></span></div></div></div>`;
+}
+
+/* ============ Admin ============ */
+function viewAdmin(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('admin-bg','admin');
+  const db = DB.get(); const st = db.settings;
+  const pendingEmails = db.emails.filter(e => e.status === 'pending').length;
+  const pendingWd = db.withdrawals.filter(w => w.status === 'pending').length;
+  document.getElementById('app').innerHTML = `
+    <div class="wrap">
+      <div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>لوحة الأدمن</b></div><button class="btn btn-ghost btn-xs" onclick="logout()">🚪 خروج</button></div>
+      <div class="stat-grid">
+        <div class="stat"><b>${db.workers.length}</b><span>عمال</span></div>
+        <div class="stat"><b>${pendingEmails}</b><span>إيميلات معلقة</span></div>
+        <div class="stat"><b>${pendingWd}</b><span>طلبات سحب</span></div>
+        <div class="stat"><b>${fmt(st.total_accepted)}</b><span>مقبولة</span></div>
+      </div>
+      <div class="grid-btns">
+        <button class="tile tile-gold" onclick="Router.go('admin_workers')"><span class="tile-emoji">👥</span><span>بيانات - عمال</span></button>
+        <button class="tile" onclick="Router.go('admin_review')"><span class="tile-emoji">📨</span><span>مراجعة إيميلات</span></button>
+        <button class="tile" onclick="Router.go('admin_withdrawals')"><span class="tile-emoji">💸</span><span>طلبات السحب</span></button>
+        <button class="tile" onclick="Router.go('admin_prices')"><span class="tile-emoji">💰</span><span>الأسعار</span></button>
+        <button class="tile" onclick="Router.go('admin_task')"><span class="tile-emoji">⚙️</span><span>إعدادات المهمة</span></button>
+        <button class="tile" onclick="Router.go('admin_notify')"><span class="tile-emoji">📢</span><span>إشعار للكل</span></button>
+        <button class="tile" onclick="Router.go('admin_video')"><span class="tile-emoji">🎬</span><span>الفيديو</span></button>
+        <button class="tile tile-gold" onclick="Router.go('admin_images')"><span class="tile-emoji">🎨</span><span>صور واجهات</span></button>
+        <button class="tile tile-ok" onclick="manualBackupNow()"><span class="tile-emoji">💾</span><span>نسخة احتياطية</span></button>
+        <button class="tile tile-ok" onclick="Router.go('admin_restore')"><span class="tile-emoji">📥</span><span>استرجاع</span></button>
+        <button class="tile tile-ok" onclick="Router.go('admin_stats')"><span class="tile-emoji">📊</span><span>إحصائيات</span></button>
+        <button class="tile tile-danger" onclick="Router.go('admin_danger')"><span class="tile-emoji">⚠️</span><span>منطقة خطرة</span></button>
+      </div>
+      <div class="footer-note">💬 <a href="${CFG.SUPPORT_URL}" target="_blank">${CFG.SUPPORT}</a></div>
+    </div>`;
+}
+
+/* ============ Admin: Backup/Restore ============ */
+function viewAdminRestore(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('admin-bg','admin');
+  const last = Backup.last();
+  const lastStr = last ? new Date(last).toLocaleString('ar-EG') : 'لم يتم بعد';
+  const count = Backup.count();
+  const db = DB.get();
+  const dbSizeKB = (JSON.stringify(db).length / 1024).toFixed(1);
+  document.getElementById('app').innerHTML = `
+    <div class="wrap">
+      <div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>💾 النسخ والاسترجاع</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div>
+
+      <div class="card card-gold">
+        <div class="h1" style="font-size:1.05rem">📊 حالة النسخ الاحتياطي</div>
+        <div class="kv"><span>آخر نسخة</span><span>${esc(lastStr)}</span></div>
+        <div class="kv"><span>عدد النسخ</span><span>${count}</span></div>
+        <div class="kv"><span>دورة النسخ</span><span>كل ${CFG.BACKUP_HOURS} ساعة</span></div>
+        <div class="kv"><span>حجم البيانات</span><span>${dbSizeKB} KB</span></div>
+        <div class="kv"><span>العمال</span><span>${db.workers.length}</span></div>
+        <div class="kv"><span>الإيميلات</span><span>${db.emails.length}</span></div>
+        <div class="kv"><span>طلبات السحب</span><span>${db.withdrawals.length}</span></div>
+      </div>
+
+      <button class="btn btn-gold" onclick="manualBackupNow();setTimeout(()=>Router.go('admin_restore'),300)">💾 رفع نسخة احتياطية الآن</button>
+
+      <div style="height:14px"></div>
+
+      <div class="card">
+        <div class="h1" style="font-size:1rem">📥 استرجاع من ملف</div>
+        <div class="notice notice-warn" style="margin:10px 0">⚠️ الاسترجاع هيستبدل كل البيانات الحالية</div>
+        <input id="restoreFile" type="file" accept=".json" class="inp" style="padding:12px">
+        <button class="btn btn-ok" style="margin-top:10px" onclick="restoreFromFileInput()">📥 استرجاع</button>
+      </div>
+
+      <div class="notice notice-info">
+        💡 <b>كيف يعمل النظام؟</b><br>
+        • كل ${CFG.BACKUP_HOURS} ساعة → نسخة تلقائية على هاتفك<br>
+        • زر "نسخة الآن" في الشريط العلوي → نسخة فورية<br>
+        • النسخة بتحتوي كل حاجة (عمال، إيميلات، صور، فيديو...)
+      </div>
+    </div>`;
+}
+window.restoreFromFileInput = async function(){
+  const input = document.getElementById('restoreFile');
+  const f = input.files && input.files[0];
+  if(!f){ toast('اختر ملف', 'err'); return; }
+  if(!confirm('هيتم استبدال كل البيانات. متأكد؟')) return;
+  try{
+    const text = await readAsText(f);
+    const d = JSON.parse(text);
+    if(!d.settings || !Array.isArray(d.workers)){ toast('ملف غير صالح', 'err'); return; }
+    DB.save(d); toast('✅ تم الاسترجاع', 'ok');
+    setTimeout(()=>Router.go('admin'), 800);
+  }catch(e){ toast('❌ فشل: ' + e.message, 'err'); }
+};
+
+/* ============ Admin: Images ============ */
+function viewAdminImages(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('admin-bg','admin');
+  const slots = [
+    { key:'logo',  name:'🖼️ شعار الموقع', desc:'يظهر في كل الشاشات' },
+    { key:'cap',   name:'🛡 صورة التحقق', desc:'خلفية شاشة الكابتشا' },
+    { key:'admin', name:'👑 صورة لوحة الأدمن', desc:'خلفية الأدمن والدخول' },
+    { key:'work',  name:'👤 صورة واجهة العمال', desc:'خلفية صفحات العمال' },
+  ];
+  const html = slots.map(sl => {
+    const img = getImage(sl.key);
+    return `<div class="img-slot"><div class="img-slot-name">${sl.name}</div><div class="img-slot-desc">${sl.desc}</div>${img?`<img src="${img}" class="img-preview">`:`<div style="text-align:center;color:var(--mut);font-size:.8rem;padding:14px;background:#000;border-radius:10px;margin-bottom:8px">لا توجد صورة</div>`}<input type="file" accept="image/*" id="img_${sl.key}" class="inp" style="font-size:.85rem;padding:10px"><button class="btn btn-gold btn-sm" style="margin-top:8px" onclick="uploadImg('${sl.key}')">💾 رفع</button>${img?`<button class="btn btn-danger btn-sm" style="margin-top:6px" onclick="delImg('${sl.key}')">🗑 حذف</button>`:''}</div>`;
+  }).join('');
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>صور واجهات</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div>${html}</div>`;
+}
+window.uploadImg = function(key){
+  const input = document.getElementById('img_' + key); const f = input.files && input.files[0];
+  if(!f){ toast('اختر صورة', 'err'); return; }
+  if(!f.type.startsWith('image/')){ toast('الملف ليس صورة', 'err'); return; }
+  toast('⏳ جاري المعالجة...');
+  compressImage(f, 1400, 1400, 0.8, dataUrl => { DB.update(d => { d.images = d.images || {}; d.images[key] = dataUrl; }); toast('✅ تم الحفظ', 'ok'); Router.go('admin_images'); });
+};
+window.delImg = function(key){ if(!confirm('حذف؟')) return; DB.update(d => { if(d.images) delete d.images[key]; }); toast('🗑 تم', 'ok'); Router.go('admin_images'); };
+
+/* ============ Admin: Workers ============ */
+function viewAdminWorkers(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get(); const active = db.workers.filter(w => !w.banned); const banned = db.workers.filter(w => w.banned);
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>بيانات - عمال</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="card card-gold"><div class="h1" style="font-size:1.05rem">➕ إضافة حساب</div><div class="field"><label class="label">اسم المستخدم</label><input id="wUser" class="inp"></div><div class="field"><label class="label">كلمة المرور</label><input id="wPass" class="inp"></div><div class="field"><label class="label">الدور</label><select id="wRole" class="inp"><option value="worker">👤 عامل</option><option value="leader">👑 ليدر</option></select></div><button class="btn btn-gold" onclick="addWorker()">✅ إضافة</button></div><div class="pill-row"><span class="pill on">🟢 نشط (${active.length})</span><span class="pill">🔴 محظور (${banned.length})</span></div><div class="card"><div style="font-size:.85rem;color:var(--mut);margin-bottom:10px">🟢 نشط</div>${active.length? active.map(w=>`<div class="list-item"><span class="emoji">${w.role==='leader'?'👑':'👤'}</span><span class="flex1"><b>${esc(w.username)}</b><br><span style="color:var(--mut);font-size:.78rem">📱 ${esc(w.phone||'—')} • ${esc(w.password)}</span></span><button class="btn btn-ghost btn-xs" onclick="toggleBan('${w.id}')">🚫</button><button class="btn btn-danger btn-xs" onclick="delWorker('${w.id}')">🗑</button></div>`).join('') : `<div style="text-align:center;color:var(--mut);padding:12px">لا يوجد</div>`}</div><div class="card"><div style="font-size:.85rem;color:var(--mut);margin-bottom:10px">🔴 محظور</div>${banned.length? banned.map(w=>`<div class="list-item"><span class="emoji">🚫</span><span class="flex1"><b>${esc(w.username)}</b></span><button class="btn btn-ok btn-xs" onclick="toggleBan('${w.id}')">🔓</button><button class="btn btn-danger btn-xs" onclick="delWorker('${w.id}')">🗑</button></div>`).join('') : `<div style="text-align:center;color:var(--mut);padding:12px">لا يوجد</div>`}</div></div>`;
+}
+window.addWorker = function(){ const u = document.getElementById('wUser').value.trim(); const p = document.getElementById('wPass').value.trim(); const r = document.getElementById('wRole').value; if(!u||!p){ toast('املأ الحقول','err'); return; } const db = DB.get(); if(db.workers.some(w=>w.username===u)){ toast('الاسم مستخدم','err'); return; } DB.update(d => { d.workers.push({ id:'w_'+Math.random().toString(36).slice(2), username:u, password:p, role:r, banned:false, balance:0, phone:null, createdAt: nowISO() }); }); toast('✅ تم','ok'); Router.go('admin_workers'); };
+window.delWorker = function(id){ if(!confirm('حذف؟')) return; DB.update(d => { d.workers = d.workers.filter(w => w.id !== id); }); toast('🗑','ok'); Router.go('admin_workers'); };
+window.toggleBan = function(id){ DB.update(d => { const w = d.workers.find(x => x.id === id); if(w) w.banned = !w.banned; }); toast('✅','ok'); Router.go('admin_workers'); };
+
+/* ============ Admin: Review ============ */
+function viewAdminReview(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get(); const list = db.emails.filter(e => e.status === 'pending'); const totalPrice = list.reduce((a,e) => a+e.price, 0);
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>المراجعة</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="stat-grid"><div class="stat"><b>${list.length}</b><span>معلقة</span></div><div class="stat"><b>${fmt(totalPrice)}</b><span>قيمة</span></div></div><div class="card">${list.length? list.map(e => { const w = db.workers.find(x => x.id === e.workerId); return `<div class="list-item"><span class="emoji">📧</span><span class="flex1"><b>${esc(e.email)}</b><br><span style="color:var(--mut);font-size:.78rem">👤 ${esc(w?.username||'?')} • ${fmt(e.price)} ج</span></span><button class="btn btn-ok btn-xs" onclick="acceptEmail('${e.id}')">✅</button><button class="btn btn-danger btn-xs" onclick="rejectEmail('${e.id}')">❌</button></div>`; }).join('') : `<div style="text-align:center;color:var(--mut);padding:20px">لا يوجد</div>`}</div><div class="grid-btns"><button class="tile tile-ok" onclick="collectFile()"><span class="tile-emoji">📂</span><span>تجميع</span></button><button class="tile tile-danger" onclick="deleteEmailsPrompt()"><span class="tile-emoji">🗑</span><span>حذف إيميلات</span></button><button class="tile tile-danger" onclick="resetStats()"><span class="tile-emoji">🧹</span><span>حذف إحصائيات</span></button></div></div>`;
+}
+window.acceptEmail = function(id){ DB.update(d => { const e = d.emails.find(x => x.id === id); if(!e) return; e.status = 'accepted'; const w = d.workers.find(x => x.id === e.workerId); if(w) w.balance = (w.balance||0) + e.price; d.settings.total_accepted = (d.settings.total_accepted||0) + 1; d.accounts.push({ email:e.email, password:e.password, price:e.price, acceptedAt: nowISO() }); }); toast('✅','ok'); Router.go('admin_review'); };
+window.rejectEmail = function(id){ DB.update(d => { const e = d.emails.find(x => x.id === id); if(!e) return; e.status = 'rejected'; d.settings.total_rejected = (d.settings.total_rejected||0) + 1; }); toast('❌','ok'); Router.go('admin_review'); };
+window.deleteEmailsPrompt = function(){ const input = prompt('الإيميلات (كل واحد في سطر):'); if(!input) return; const list = input.split(/\n|,/).map(x=>x.trim().toLowerCase()).filter(Boolean); let n = 0; DB.update(d => { d.emails = d.emails.filter(e => { if(list.includes(e.email.toLowerCase()) && e.status==='pending'){ n++; return false; } return true; }); }); toast(`🗑 ${n}`,'ok'); Router.go('admin_review'); };
+window.resetStats = function(){ if(!confirm('تصفير؟')) return; DB.update(d => { d.settings.total_accepted = 0; d.settings.total_rejected = 0; }); toast('✅','ok'); Router.go('admin_review'); };
+window.collectFile = function(){ const db = DB.get(); const list = db.emails.filter(e => e.status === 'pending'); if(!list.length){ toast('لا يوجد','err'); return; } download(list.map(e=>`${e.email}:${e.password}`).join('\n'), 'Gmail_Fresh.txt', 'text/plain'); toast(`📂 ${list.length}`,'ok'); };
+
+/* ============ Admin: Withdrawals ============ */
+function viewAdminWithdrawals(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get(); const list = db.withdrawals.filter(w => w.status === 'pending');
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>السحب</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="card">${list.length? list.map(w => { const wk = db.workers.find(x => x.id === w.workerId); return `<div class="list-item"><span class="emoji">💸</span><span class="flex1"><b>${esc(wk?.username||'?')}</b> — ${fmt(w.amount)} ج<br><span style="color:var(--mut);font-size:.78rem">${esc(w.method)} • ${esc(w.address)}</span></span><button class="btn btn-ok btn-xs" onclick="payWithdraw('${w.id}')">✅</button></div>`; }).join('') : `<div style="text-align:center;color:var(--mut);padding:20px">لا يوجد</div>`}</div></div>`;
+}
+window.payWithdraw = id => { DB.update(d => { const w = d.withdrawals.find(x => x.id === id); if(w){ w.status = 'paid'; w.paidAt = nowISO(); } }); toast('✅','ok'); Router.go('admin_withdrawals'); };
+
+/* ============ Admin: Prices ============ */
+function viewAdminPrices(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get(); const st = db.settings;
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>الأسعار</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="card card-gold"><div class="h1" style="font-size:1.05rem">💰 سعر اليوم</div><div class="field"><input id="pToday" class="inp" type="number" step="0.5" value="${st.today_price}"></div></div><div class="card card-gold"><div class="h1" style="font-size:1.05rem">👑 أسعار الليدر</div><div class="row"><div class="field"><label class="label">10</label><input id="p10" class="inp" type="number" step="0.5" value="${st.leader_10}"></div><div class="field"><label class="label">20</label><input id="p20" class="inp" type="number" step="0.5" value="${st.leader_20}"></div></div><div class="row"><div class="field"><label class="label">30</label><input id="p30" class="inp" type="number" step="0.5" value="${st.leader_30}"></div><div class="field"><label class="label">40</label><input id="p40" class="inp" type="number" step="0.5" value="${st.leader_40}"></div></div><div class="field"><label class="label">50</label><input id="p50" class="inp" type="number" step="0.5" value="${st.leader_50}"></div><button class="btn btn-gold" onclick="savePrices()">💾 حفظ</button></div></div>`;
+}
+window.savePrices = function(){ DB.update(d => { d.settings.today_price = +document.getElementById('pToday').value || 5; d.settings.leader_10 = +document.getElementById('p10').value || 7; d.settings.leader_20 = +document.getElementById('p20').value || 8.5; d.settings.leader_30 = +document.getElementById('p30').value || 10; d.settings.leader_40 = +document.getElementById('p40').value || 11; d.settings.leader_50 = +document.getElementById('p50').value || 13; }); toast('✅','ok'); Router.go('admin'); };
+
+/* ============ Admin: Task ============ */
+function viewAdminTask(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get(); const st = db.settings;
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>المهمة</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="card card-gold"><div class="field"><label class="label">كلمة المرور</label><input id="tPass" class="inp" value="${esc(st.task_password)}"></div><div class="field"><label class="label">اسم الزر</label><input id="tName" class="inp" value="${esc(st.task_name)}"></div><button class="btn btn-gold" onclick="saveTaskSettings()">💾 حفظ</button></div><div class="card"><div class="field"><label class="label">إيقاف المهمة بنص</label><textarea id="tStop" class="inp" rows="3" placeholder="اتركه فارغاً للتشغيل">${esc(st.task_stopped_msg)}</textarea></div><button class="btn ${st.task_stopped?'btn-ok':'btn-danger'}" onclick="toggleTaskStop()">${st.task_stopped ? '▶️ تشغيل' : '⏹ إيقاف'}</button></div></div>`;
+}
+window.saveTaskSettings = function(){ DB.update(d => { d.settings.task_password = document.getElementById('tPass').value; d.settings.task_name = document.getElementById('tName').value; }); toast('✅','ok'); Router.go('admin'); };
+window.toggleTaskStop = function(){ DB.update(d => { const txt = document.getElementById('tStop').value.trim(); d.settings.task_stopped = !!txt; d.settings.task_stopped_msg = txt; }); toast('✅','ok'); Router.go('admin_task'); };
+
+/* ============ Admin: Notify ============ */
+function viewAdminNotify(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get();
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>إشعار للكل</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="card card-gold"><div class="field"><label class="label">نص الإشعار</label><textarea id="nText" class="inp" rows="4"></textarea></div><button class="btn btn-gold" onclick="sendNotify()">📢 إرسال</button></div><div class="card"><div style="font-size:.85rem;color:var(--mut);margin-bottom:10px">آخر الإشعارات</div>${(db.notifications||[]).slice(-5).reverse().map(n => `<div class="list-item"><span class="emoji">📢</span><span class="flex1">${esc(n.text)}</span><button class="btn btn-danger btn-xs" onclick="delNotify('${n.id}')">🗑</button></div>`).join('') || `<div style="text-align:center;color:var(--mut);padding:12px">لا يوجد</div>`}</div></div>`;
+}
+window.sendNotify = function(){ const txt = document.getElementById('nText').value.trim(); if(!txt){ toast('أدخل نص','err'); return; } DB.update(d => { d.notifications.push({ id:'n_'+Math.random().toString(36).slice(2), text:txt, at: nowISO() }); }); toast('✅','ok'); Router.go('admin_notify'); };
+window.delNotify = id => { DB.update(d => { d.notifications = d.notifications.filter(n => n.id !== id); }); Router.go('admin_notify'); };
+
+/* ============ Admin: Video ============ */
+function viewAdminVideo(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get();
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>الفيديو</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="card card-gold"><div class="field"><label class="label">رابط الفيديو</label><input id="vUrl" class="inp" placeholder="https://..." value="${db.video && !db.video.startsWith('data:') ? esc(db.video) : ''}"></div><div class="field"><label class="label">أو ارفع فيديو</label><input id="vFile" type="file" accept="video/*" class="inp"></div><button class="btn btn-gold" onclick="saveVideo()">💾 حفظ</button>${db.video?`<button class="btn btn-danger" style="margin-top:8px" onclick="delVideo()">🗑 حذف</button>`:''}</div></div>`;
+}
+window.saveVideo = function(){ const url = document.getElementById('vUrl').value.trim(); const fi = document.getElementById('vFile'); if(fi.files && fi.files[0]){ const f = fi.files[0]; if(f.size > 4*1024*1024 && !confirm('كبير جداً؟')) return; const r = new FileReader(); r.onload = () => { DB.update(d => { d.video = r.result; }); toast('✅','ok'); Router.go('admin'); }; r.readAsDataURL(f); } else if(url){ DB.update(d => { d.video = url; }); toast('✅','ok'); Router.go('admin'); } else toast('أدخل رابط','err'); };
+window.delVideo = () => { DB.update(d => { d.video = null; }); toast('🗑','ok'); Router.go('admin_video'); };
+
+/* ============ Admin: Stats ============ */
+function viewAdminStats(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get();
+  const acc = db.emails.filter(e => e.status === 'accepted').length;
+  const rej = db.emails.filter(e => e.status === 'rejected').length;
+  const totalMoney = db.emails.filter(e => e.status === 'accepted').reduce((a,e) => a+e.price, 0);
+  const last = Backup.last();
+  const lastStr = last ? new Date(last).toLocaleString('ar-EG') : 'لم يتم بعد';
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>إحصائيات</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="stat-grid"><div class="stat"><b>${db.workers.length}</b><span>عمال</span></div><div class="stat"><b>${db.workers.filter(w=>w.banned).length}</b><span>محظورين</span></div><div class="stat"><b>${acc}</b><span>مقبولة</span></div><div class="stat"><b>${rej}</b><span>مرفوضة</span></div><div class="stat"><b>${fmt(totalMoney)}</b><span>أرباح (ج)</span></div><div class="stat"><b>${db.withdrawals.length}</b><span>سحب</span></div></div><div class="card"><div class="kv"><span>الأرقام المسجلة</span><span>${(db.phones||[]).length}</span></div><div class="kv"><span>سعر اليوم</span><span>${db.settings.today_price} ج</span></div><div class="kv"><span>آخر نسخة احتياطية</span><span>${esc(lastStr)}</span></div><div class="kv"><span>عدد النسخ</span><span>${Backup.count()}</span></div></div></div>`;
+}
+
+/* ============ Admin: Danger ============ */
+function viewAdminDanger(){
+  const s = Session.get(); if(!s||s.role !== 'admin'){ Router.go('login'); return; }
+  applyBg('work-bg','work');
+  const db = DB.get();
+  document.getElementById('app').innerHTML = `<div class="wrap"><div class="top"><div class="top-logo">${logoHTML('logo-svg-sm')}<b>منطقة خطرة</b></div><button class="btn btn-ghost btn-xs" onclick="Router.go('admin')">← رجوع</button></div><div class="notice notice-danger">⚠️ لا يمكن التراجع</div><div class="card"><div class="h1" style="font-size:1rem">🔒 الصيانة</div><button class="btn ${db.settings.maintenance?'btn-ok':'btn-danger'}" onclick="toggleMaintenance()">${db.settings.maintenance ? '▶️ إيقاف الصيانة' : '🛠 تفعيل'}</button></div><div class="card"><div class="h1" style="font-size:1rem">🚫 فك حظر جهاز</div><div class="field" style="margin-top:10px"><input id="unbanFp" class="inp" placeholder="fp_xxx"></div><button class="btn btn-ok" onclick="unbanFp()">🔓 فك</button></div><div class="card"><div class="h1" style="font-size:1rem">🗑 مسح كل البيانات</div><div class="notice notice-warn" style="margin-bottom:10px">خد نسخة احتياطية الأول</div><button class="btn btn-danger" onclick="wipeAll()">💥 مسح شامل</button></div></div>`;
+}
+window.toggleMaintenance = () => { DB.update(d => { d.settings.maintenance = !d.settings.maintenance; }); toast('✅','ok'); Router.go('admin_danger'); };
+window.unbanFp = () => { const fp = document.getElementById('unbanFp').value.trim(); if(!fp){ toast('أدخل البصمة','err'); return; } const b = Bans.all(); delete b[fp]; Bans.save(b); toast('✅','ok'); };
+window.wipeAll = () => { if(!confirm('متأكد؟')) return; if(!confirm('تأكيد أخير؟')) return; localStorage.removeItem(CFG.DB_KEY); Session.clear(); toast('💥','ok'); Router.go('login'); };
+window.logout = () => { Session.clear(); Router.go('login'); };
+
+/* ============ Render ============ */
+function render(view, params){
+  switch(view){
+    case 'captcha': return viewCaptcha();
+    case 'login': return viewLogin();
+    case 'phone': return viewPhonePrompt();
+    case 'banned': return viewBanned(params||{});
+    case 'dashboard': return viewDashboard();
+    case 'task': return viewTask();
+    case 'myemails': return viewMyEmails();
+    case 'withdraw': return viewWithdraw();
+    case 'invite': return viewInvite();
+    case 'video': return viewVideo();
+    case 'info': return viewInfo();
+    case 'admin': return viewAdmin();
+    case 'admin_workers': return viewAdminWorkers();
+    case 'admin_review': return viewAdminReview();
+    case 'admin_withdrawals': return viewAdminWithdrawals();
+    case 'admin_prices': return viewAdminPrices();
+    case 'admin_task': return viewAdminTask();
+    case 'admin_notify': return viewAdminNotify();
+    case 'admin_video': return viewAdminVideo();
+    case 'admin_images': return viewAdminImages();
+    case 'admin_stats': return viewAdminStats();
+    case 'admin_restore': return viewAdminRestore();
+    case 'admin_danger': return viewAdminDanger();
+    default: return viewCaptcha();
+  }
+}
+function init(){
+  const s = Session.get(); const fp = Bans.fingerprint();
+  if(Bans.isBanned(fp)){ Router.go('banned', { reason: `تم إيقافك مؤقتاً. بعد ${Bans.remaining(fp)} دقيقة.` }); return; }
+  if(s){
+    if(s.role === 'admin'){ Router.go('admin'); }
+    else {
+      const db = DB.get(); const w = db.workers.find(x => x.id === s.id);
+      if(!w || w.banned){ Session.clear(); Router.go('login'); return; }
+      if(db.settings.maintenance){ Router.go('banned', { reason: '🛠 تحت الصيانة' }); return; }
+      if(needsPhone(s)){ Router.go('phone'); return; }
+      Router.go('dashboard');
+    }
+  } else {
+    if(localStorage.getItem('gc_cap_ok') === '1'){ Router.go('login'); return; }
+    Router.go('captcha');
+  }
+}
+window.addEventListener('DOMContentLoaded', () => {
+  init();
+  setInterval(() => Backup.autoCheck(), 5 * 60 * 1000);
+  setInterval(() => Backup.renderBar(), 60 * 1000);
+  setTimeout(() => Backup.autoCheck(), 3000);
+});
+</script>
+</body>
+</html>
